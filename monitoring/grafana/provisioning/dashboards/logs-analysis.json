@@ -1,0 +1,72 @@
+{
+  "id": null,
+  "uid": "logs-analysis",
+  "title": "Logs Analysis",
+  "tags": ["logs"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "type": "logs",
+      "title": "All application logs",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 10 },
+      "options": {
+        "showLabels": true,
+        "showTime": true
+      },
+      "targets": [
+        {
+          "expr": "{job=\"docker-logs\"}",
+          "datasource": { "type": "loki", "uid": "Loki" }
+        }
+      ]
+    },
+    {
+      "type": "logs",
+      "title": "Error logs",
+      "gridPos": { "x": 0, "y": 10, "w": 12, "h": 10 },
+      "targets": [
+        {
+          "expr": "{job=\"docker-logs\"} |= \"\\\"level\\\":\\\"error\\\"\"",
+          "datasource": { "type": "loki", "uid": "Loki" }
+        }
+      ]
+    },
+    {
+      "type": "logs",
+      "title": "Login failures",
+      "gridPos": { "x": 12, "y": 10, "w": 12, "h": 10 },
+      "targets": [
+        {
+          "expr": "{job=\"docker-logs\"} |= \"login_failed\"",
+          "datasource": { "type": "loki", "uid": "Loki" }
+        }
+      ]
+    },
+    {
+      "type": "logs",
+      "title": "Validation failures (HTTP 400)",
+      "gridPos": { "x": 0, "y": 20, "w": 12, "h": 10 },
+      "targets": [
+        {
+          "expr": "{job=\"docker-logs\"} |= \"\\\"statusCode\\\":400\"",
+          "datasource": { "type": "loki", "uid": "Loki" }
+        }
+      ]
+    },
+    {
+      "type": "piechart",
+      "title": "Log severity breakdown",
+      "gridPos": { "x": 12, "y": 20, "w": 12, "h": 10 },
+      "targets": [
+        {
+          "expr": "sum by (level) (count_over_time({job=\"docker-logs\"} |= \"\\\"level\\\":\"[5m]))",
+          "datasource": { "type": "loki", "uid": "Loki" }
+        }
+      ]
+    }
+  ]
+}
+

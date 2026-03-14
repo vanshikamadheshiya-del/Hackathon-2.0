@@ -1,0 +1,25 @@
+{
+  "id": null,
+  "uid": "traces",
+  "title": "Trace Exploration",
+  "tags": ["traces"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "type": "traces",
+      "title": "End-to-end request traces",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 12 },
+      "targets": [
+        {
+          "queryType": "traceQL",
+          "query": "{ service.name = \"backend\" }",
+          "datasource": { "type": "tempo", "uid": "Tempo" }
+        }
+      ]
+    }
+  ]
+}
+

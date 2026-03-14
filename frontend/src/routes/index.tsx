@@ -1,0 +1,61 @@
+import { useRoutes, Navigate } from "react-router-dom";
+import Layout from "../layouts/Layout";
+import LoginPage from "../pages/Login";
+import RegisterPage from "../pages/Register";
+import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
+import ProductListPage from "../pages/products/ProductList";
+import ProductFormPage from "../pages/products/ProductForm";
+import ForgotPasswordPage from "../pages/ForgotPassword";
+
+export default function AppRouter() {
+  const routes = useRoutes([
+    {
+      path: "/auth",
+      children: [
+        {
+          path: "login",
+          element: (
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "register",
+          element: (
+            <PublicRoute>
+              <RegisterPage />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "forgot-password",
+          element: (
+            <PublicRoute>
+              <ForgotPasswordPage />
+            </PublicRoute>
+          ),
+        },
+        { path: "*", element: <Navigate to="/auth/login" replace /> },
+      ],
+    },
+
+    {
+      path: "/",
+      element: (
+        <ProtectedRoute>
+          <Layout />
+        </ProtectedRoute>
+      ),
+      children: [
+        { path: "", element: <Navigate to="/products" replace /> },
+        { path: "products", element: <ProductListPage /> },
+        { path: "products/new", element: <ProductFormPage /> },
+        { path: "products/edit/:id", element: <ProductFormPage /> },
+      ],
+    },
+    { path: "*", element: <Navigate to="/products" replace /> },
+  ]);
+  return routes;
+}

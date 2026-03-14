@@ -1,0 +1,73 @@
+{
+  "id": null,
+  "uid": "app-health",
+  "title": "Application Health",
+  "tags": ["app", "health"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Requests per minute",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total[1m]))",
+          "legendFormat": "requests/min",
+          "datasource": { "type": "prometheus", "uid": "Prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Error rate (per minute)",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum(rate(http_request_errors_total[1m]))",
+          "legendFormat": "errors/min",
+          "datasource": { "type": "prometheus", "uid": "Prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "95th percentile latency (ms)",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_ms_bucket[5m])) by (le))",
+          "legendFormat": "p95 latency",
+          "datasource": { "type": "prometheus", "uid": "Prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Slowest endpoints (avg duration)",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "topk(5, sum(rate(http_request_duration_ms_sum[5m])) by (route) / sum(rate(http_request_duration_ms_count[5m])) by (route))",
+          "legendFormat": "{{route}}",
+          "datasource": { "type": "prometheus", "uid": "Prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Active users over time",
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "auth_active_users",
+          "legendFormat": "active users",
+          "datasource": { "type": "prometheus", "uid": "Prometheus" }
+        }
+      ]
+    }
+  ]
+}
+
