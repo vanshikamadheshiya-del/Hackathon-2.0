@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useNavigate } from "react-router-dom";
 import { getProductsAPI, deleteProductAPI } from "../../services/product.api";
 import type { Product } from "../../types/product";
@@ -59,6 +60,7 @@ export default function ProductListPage() {
     setPage(0);
   };
 
+  const handleView = (id: string) => navigate(`/products/view/${id}`);
   const handleEdit = (id: string) => navigate(`/products/edit/${id}`);
   
   const handleDelete = (id: string) => {
@@ -138,11 +140,14 @@ export default function ProductListPage() {
                           variant="outlined"
                         />
                       </TableCell>
-                      <TableCell align="right">
-                        <IconButton onClick={() => handleEdit(product._id!)} color="primary" size="small">
+                       <TableCell align="right">
+                        <IconButton onClick={() => handleView(product._id!)} color="info" size="small" title="View">
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton onClick={() => handleEdit(product._id!)} color="primary" size="small" title="Edit">
                           <EditIcon fontSize="small" />
                         </IconButton>
-                        <IconButton onClick={() => handleDelete(product._id!)} color="error" size="small">
+                        <IconButton onClick={() => handleDelete(product._id!)} color="error" size="small" title="Delete">
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       </TableCell>

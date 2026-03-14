@@ -1,6 +1,7 @@
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+// @ts-ignore: Could not find a declaration file for external module
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 
@@ -15,9 +16,9 @@ const sdk = new NodeSDK({
   }),
   traceExporter,
   instrumentations: getNodeAutoInstrumentations({
-    '@opentelemetry/instrumentation-express': { enabled: true },
-    '@opentelemetry/instrumentation-http': { enabled: true },
-    '@opentelemetry/instrumentation-mongoose': { enabled: true },
+    '@opentelemetry/instrumentation-express': {},
+    '@opentelemetry/instrumentation-http': {},
+    '@opentelemetry/instrumentation-mongoose': {},
   }),
 });
 

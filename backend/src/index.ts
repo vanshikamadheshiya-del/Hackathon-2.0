@@ -11,6 +11,7 @@ import { requestLogger, performanceMonitor, errorTracker, metricsEndpoint } from
 import authRoutes from "./routes/auth.routes";
 import productRoutes from "./routes/product.routes";
 import chaosRoutes from "./routes/chaos.routes";
+import userRoutes from "./routes/user.routes";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import path from "path";
@@ -99,6 +100,7 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/chaos", chaosRoutes);
+app.use("/api/user", userRoutes);
 
 // Prometheus metrics
 app.get('/metrics', metricsEndpoint);
