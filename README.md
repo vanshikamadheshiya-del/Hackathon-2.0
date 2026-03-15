@@ -46,3 +46,6 @@ Test observability by hitting these endpoints:
 - Delay: `/api/chaos/delay`
 - Errors: `/api/chaos/error`
 - Heavy Query: `/api/chaos/heavy`
+
+## Video Link
+https://drive.google.com/file/d/1g8cE6Ih3gyQL_dANaSKTsiV0pgXaqPGG/view
