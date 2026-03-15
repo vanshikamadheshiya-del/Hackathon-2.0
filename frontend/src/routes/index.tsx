@@ -10,6 +10,7 @@ import ProductViewPage from "../pages/products/ProductView";
 import ForgotPasswordPage from "../pages/ForgotPassword";
 import UserListPage from "../pages/users/UserList";
 import UserFormPage from "../pages/users/UserForm";
+import DashboardPage from "../pages/Dashboard";
 
 export default function AppRouter() {
   const routes = useRoutes([
@@ -52,7 +53,8 @@ export default function AppRouter() {
         </ProtectedRoute>
       ),
       children: [
-        { path: "", element: <Navigate to="/products" replace /> },
+        { path: "", element: <Navigate to="/dashboard" replace /> },
+        { path: "dashboard", element: <DashboardPage /> },
         { path: "products", element: <ProductListPage /> },
         { path: "products/new", element: <ProductFormPage /> },
         { path: "products/edit/:id", element: <ProductFormPage /> },

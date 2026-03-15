@@ -14,7 +14,10 @@ import {
   Typography,
   Avatar,
   Tooltip,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +32,8 @@ export default function UserListPage() {
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
@@ -96,7 +101,12 @@ export default function UserListPage() {
     return `hsl(${h}, 60%, 45%)`;
   };
 
-  const paginatedUsers = users.slice(
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const paginatedUsers = filteredUsers.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
@@ -108,6 +118,27 @@ export default function UserListPage() {
         buttonText="Add User"
         buttonLink="/users/new"
       />
+
+      <Box display="flex" gap={2} mt={2} mb={2}>
+        <TextField
+          size="small"
+          placeholder="Search by name or email..."
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => {
+             setSearchTerm(e.target.value);
+             setPage(0);
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          sx={{ flexGrow: 1, maxWidth: 400 }}
+        />
+      </Box>
 
       {loading ? (
         <Box display="flex" justifyContent="center" py={10}>
@@ -199,7 +230,7 @@ export default function UserListPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={users.length}
+            count={filteredUsers.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

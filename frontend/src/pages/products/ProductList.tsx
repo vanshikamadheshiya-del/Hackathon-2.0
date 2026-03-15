@@ -13,7 +13,14 @@ import {
   CircularProgress,
   Typography,
   Chip,
+  TextField,
+  InputAdornment,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -30,6 +37,10 @@ export default function ProductListPage() {
   // Pagination State
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  // Search & Filter State
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
@@ -82,8 +93,19 @@ export default function ProductListPage() {
     }
   };
 
-  // Logic for client-side pagination
-  const paginatedProducts = products.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  // Logic for client-side pagination and filtering
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (product.slug && product.slug.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory = categoryFilter ? product.category === categoryFilter : true;
+    return matchesSearch && matchesCategory;
+  });
+
+  const paginatedProducts = filteredProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
+  // Extract unique categories for the filter dropdown
+  const uniqueCategories = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
 
   return (
     <Box p={3}>
@@ -92,6 +114,43 @@ export default function ProductListPage() {
         buttonText="Add Product"
         buttonLink="/products/new"
       />
+
+      <Box display="flex" gap={2} mt={2} mb={2}>
+        <TextField
+          size="small"
+          placeholder="Search products..."
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setPage(0); // Reset page on search
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          sx={{ flexGrow: 1, maxWidth: 400 }}
+        />
+        <FormControl size="small" sx={{ minWidth: 200 }}>
+          <InputLabel>Category</InputLabel>
+          <Select
+            value={categoryFilter}
+            label="Category"
+            onChange={(e) => {
+              setCategoryFilter(e.target.value);
+              setPage(0); // Reset page on filter
+            }}
+          >
+            <MenuItem value=""><em>All Categories</em></MenuItem>
+            {uniqueCategories.map((cat) => (
+              <MenuItem key={cat} value={cat}>{cat as string}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
 
       {loading ? (
         <Box display="flex" justifyContent="center" py={10}>
@@ -160,7 +219,7 @@ export default function ProductListPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={products.length}
+            count={filteredProducts.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
